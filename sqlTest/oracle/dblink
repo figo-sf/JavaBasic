@@ -1,0 +1,39 @@
+--hr_punch 两个数据库表之间同步数据
+--同步后的数据更新一下ehr_flag 变为1，下次再同步只查0的同步即可
+--1.建立连接
+create public database link hrlink connect to PDSSZLH IDENTIFIED BY PDSSZLH
+using '(DESCRIPTION =
+(ADDRESS_LIST =
+(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.88)(PORT = 1521))
+)
+(CONNECT_DATA =
+(SERVICE_NAME = ORCL)
+)
+)';
+--2 测试连接 select * from hr_punch@hrlink;
+
+--3.存储过程
+CREATE OR REPLACE
+PROCEDURE "P_hr_punch_id" AS
+BEGIN
+ FOR TEMP IN (SELECT * FROM hr_punch A WHERE A.ehr_flag='0')  LOOP
+INSERT INTO hr_punch@hrlink (ID, RecordID,NetworkID,NetworkName,CardNumber,Lastname,Firstname,Department,NC100Date,APID,APName)
+VALUES (TEMP.ID, TEMP.RecordID,TEMP.NetworkID,TEMP.NetworkName,TEMP.CardNumber,TEMP.Lastname,TEMP.Firstname,TEMP.Department,TEMP.NC100Date,TEMP.APID,TEMP.APName);
+UPDATE hr_punch  SET delFlag='1' WHERE (id=TEMP.ID);
+END LOOP;
+ COMMIT;
+END "P_hr_punch_id";
+
+--4 测试存储过程 execute P_hr_punch_id;
+
+--5.定时任务
+DECLARE
+   job_no_ NUMBER;
+
+BEGIN
+ dbms_job.submit (job_no_,
+  'P_hr_punch_id',
+  sysdate,
+  'TRUNC(next_day(sysdate,3))+2/24'
+ ) ; COMMIT ;
+END ;

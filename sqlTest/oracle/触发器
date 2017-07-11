@@ -1,0 +1,34 @@
+declare
+   dbm varchar2(4);
+BEGIN
+
+    case
+      when updating
+      then
+      UPDATE MMS_MAINTAIN_PLAN_ALL
+      SET jx_start_time=sysdate
+      WHERE jx_uuid    = :new_val.id;
+    when inserting then
+    -- select xxx into xxx 给变量赋值
+			SELECT MMSCODE into dbm FROM "CSMISSHDT16"."SYS_T_STATION" WHERE STATIONID =:new_val.STATIONID;
+      INSERT
+      INTO MMS_MAINTAIN_PLAN_ALL
+        (
+          jx_uuid,
+          jx_start_time,
+					jx_dbm,
+          jx_end_time,
+          JX_DEL_FLAG
+        )
+        values
+        (
+          :new_val.id,
+          :new_val.REPAIRSTART,
+					dbm,
+          :new_val.REPAIREND,
+          0
+        );
+    when deleting then
+      UPDATE MMS_MAINTAIN_PLAN_ALL SET JX_DEL_FLAG =1 WHERE jx_uuid = :old_val.id;
+    end case;
+  END;

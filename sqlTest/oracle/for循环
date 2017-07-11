@@ -1,0 +1,48 @@
+--每周定时任务,更新每天内容
+
+CREATE OR REPLACE
+PROCEDURE "P_UPDATE_WXU_SH_DTTJ_TEMP"
+AS
+  calcdate DATE; --当前时间去掉时分秒 2017-02-20
+  calday NUMBER; --当前时间 星期日(1)星期-(2)...
+  tempnum NUMBER;
+BEGIN
+  calcdate    :=TO_DATE (TO_CHAR (SYSDATE, 'yyyy-mm-dd'),'yyyy-mm-dd') ;
+  calday      :=TO_NUMBER (TO_CHAR(SYSDATE, 'd'));
+  tempnum     :=0;--周几
+  while(tempnum<7)--一周七天
+  loop
+    tempnum       :=tempnum                +1;
+    FOR repairOne                         IN
+    (SELECT to_date(CONCAT(TO_CHAR (SYSDATE+tempnum, 'yyyy-mm-dd'),to_char(REPAIRSTART,'hh24:mi:ss')),'yyyy-mm-dd hh24:mi:ss') AS STARTTIME,
+      S.STATIONID,
+      to_date(CONCAT(TO_CHAR (SYSDATE+tempnum, 'yyyy-mm-dd'),to_char(REPAIREND,'hh24:mi:ss')),'yyyy-mm-dd hh24:mi:ss') AS ENDTIME
+    FROM WXU_SH_DTTJ_PLAN P
+    INNER JOIN WXU_SH_DTTJ_r r
+    ON r.PLANID = P ."ID"
+    INNER JOIN SYS_T_STATION s
+    ON s.stationid                              = r.stationid
+    WHERE TO_NUMBER (TO_CHAR(REPAIRSTART, 'd')) = TO_NUMBER (TO_CHAR(SYSDATE+tempnum, 'd'))
+    )
+    LOOP
+      INSERT
+      INTO "WXU_SH_DTTJ_TEMP"
+        (
+          "ID",
+          "STATIONID",
+          "REPAIRSTART",
+          "REPAIREND",
+          "CYCLEFALG"
+        )
+        VALUES
+        (
+          sys_guid(),
+          repairOne.STATIONID,
+          repairOne.STARTTIME,
+          repairOne.ENDTIME,
+          1
+        );
+    END LOOP;
+  END LOOP;
+  COMMIT;
+END "P_UPDATE_WXU_SH_DTTJ_TEMP";
