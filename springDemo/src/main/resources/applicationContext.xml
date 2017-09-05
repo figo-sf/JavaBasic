@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+
+    <!-- 配置事件监听 -->
+    <bean class="com.figo.event.EmailNotifier"/>
+
+    <bean id="shoppingCart" class="ShoppingCart.ShoppingCart" scope="prototype">
+        <property name="id" value="9"></property>
+    </bean>
+    <!--<context:component-scan base-package="com.figo.aop"/>-->
+    <beans profile="test">
+        <bean id="car" class="com.figo.Car">
+            <property name="brand" value="Adids"/>
+            <property name="color" value="greed"/>
+            <property name="speed" value="1500"/>
+        </bean>
+    </beans>
+    <beans profile="dev">
+        <bean id="car" class="com.figo.Car" name="adidas">
+            <property name="brand" value="Adidss"/>
+            <property name="color" value="greedy"/>
+            <property name="speed" value="15000"/>
+        </bean>
+        <alias name="adidas" alias="lining"></alias>
+
+
+    </beans>
+</beans>
