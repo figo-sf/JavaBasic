@@ -9,6 +9,7 @@ public class HelloWorldCommand implements Command {
         super();
         this.subject = (HelloWorldSubject)subject;
     }
+    @Override
     public void execute() {
         subject.setStr("hello world");
     }
