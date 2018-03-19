@@ -33,5 +33,7 @@ public class FreeMarkerConfiguration {
         StringWriter stringWriter = new StringWriter();
         template.process(map, stringWriter);
         System.out.println(stringWriter.toString());
+
+
     }
 }
