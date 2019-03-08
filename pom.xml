@@ -18,6 +18,8 @@
         <module>springDemo</module>
         <module>vue</module>
         <module>redistest</module>
+        <module>Jpush</module>
+        <module>figoini</module>
     </modules>
     <packaging>pom</packaging>
     <properties>
