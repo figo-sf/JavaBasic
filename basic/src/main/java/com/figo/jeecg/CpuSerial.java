@@ -12,6 +12,8 @@ public class CpuSerial {
     public static void main(String[] args) {
 
         System.out.println(j());
+        System.out.println(h());
+        System.out.println(g());
         System.out.println(b("cmd /c "+ "ipconfig"+ "/all"));
 
     }
