@@ -11,14 +11,14 @@ import java.util.Scanner;
 public class CpuSerial {
     public static void main(String[] args) {
 
-        System.out.println(j());
-        System.out.println(h());
-        System.out.println(g());
-        System.out.println(b("cmd /c "+ "ipconfig"+ "/all"));
+        System.out.println(getOsName());
+        System.out.println(getWindosSN());
+        System.out.println(getCpu());
+        System.out.println(getMac("cmd /c "+ "ipconfig"+ "/all"));
 
     }
 
-    private static   String g() {
+    private static   String getCpu() {
         String serial = "CPUID000";
 
         try {
@@ -34,7 +34,7 @@ public class CpuSerial {
         return serial;
     }
 
-    private static String h() {
+    private static String getWindosSN() {
         String result = "ZBXLH000";
 
         try {
@@ -61,11 +61,11 @@ public class CpuSerial {
     }
 
 
-    private static String j() {
+    private static String getOsName() {
         return System.getProperty("os.name").toLowerCase();
     }
 
-    private static String b(String execStr) {
+    private static String getMac(String execStr) {
         String mac = null;
         BufferedReader bufferedReader = null;
         Process process = null;

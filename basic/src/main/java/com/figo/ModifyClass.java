@@ -12,7 +12,7 @@ import javassist.CtMethod;
 
 import java.io.FileInputStream;
 
-public class Test {
+public class ModifyClass {
     public static void main(String[] args) {
         try {
             changeMethod();
