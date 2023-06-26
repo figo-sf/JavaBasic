@@ -35,7 +35,7 @@ public class Init4jExample {
     private static final String SEX = "sex";
     private static final String ADDRESS = "address";
 
-    /**
+    /**经·
      * <pre>
      * @param args
      * </pre>
